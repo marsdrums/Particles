@@ -1,0 +1,102 @@
+<jittershader name="fill-flat-quads">
+	<description>Default Shader </description>
+	<param name="pos" type="vec3" state="POSITION" />
+	<param name="prevPos" type="vec3" state="NORMAL" />
+	<param name="MV" type="mat4" state="MODELVIEW_MATRIX" />
+	<param name="P" type="mat4" state="PROJECTION_MATRIX" />
+	<param name="color" type="vec4" state="COLOR" />
+	<language name="glsl" version="1.5">
+		<bind param="pos" program="vp" />
+		<bind param="prevPos" program="vp" />
+		<bind param="MV" program="vp" />
+		<bind param="P" program="gp" />
+		<bind param="color" program="vp" />
+		<program name="vp" type="vertex">
+<![CDATA[
+#version 330 core
+uniform mat4 MV;
+in vec3 pos, prevPos;
+in vec4 color;
+
+out jit_PerVertex {
+	flat vec4 color;
+	flat vec4 prevPos;	
+} jit_out;
+
+void main() {	
+	gl_Position = MV * vec4(pos, 1.);	
+	jit_out.color = color;
+	jit_out.prevPos = MV * vec4(prevPos, 1.);
+}
+]]>
+		</program>
+		<program name="gp" type="geometry">
+<![CDATA[
+#version 330 core
+#define size 0.01
+
+layout (points) in;
+layout (triangle_strip, max_vertices=4) out;
+
+uniform mat4 P;
+
+in jit_PerVertex {
+	flat vec4 color;	
+	flat vec4 prevPos;
+} jit_in[];
+
+out jit_PerVertex {
+	flat vec4 color;
+	smooth vec2 corner;	
+};
+
+bool isDifferent(vec2 a, vec2 b){
+
+	return (abs(a.x - b.x) + abs(a.y - b.y)) > 0.0000001;
+}
+
+void main() {
+
+	color = jit_in[0].color;
+	vec3 up = vec3(0, 1, 0);
+	vec3 right = vec3(1, 0, 0);
+
+	if(isDifferent(gl_in[0].gl_Position.xy, jit_in[0].prevPos.xy)){
+
+		up = -normalize(vec3(gl_in[0].gl_Position.xy - jit_in[0].prevPos.xy, 0));	
+		right = normalize(cross(vec3(0,0,1), up));
+	}
+
+	up *= size;
+	right *= size;
+
+	gl_Position = P * (gl_in[0].gl_Position + vec4(-right - up, 0));	corner = vec2(-1, -1);	EmitVertex();
+	gl_Position = P * (gl_in[0].gl_Position + vec4(+right - up, 0));	corner = vec2(+1, -1);	EmitVertex();
+	gl_Position = P * (jit_in[0].prevPos + vec4(-right + up, 0));		corner = vec2(-1, +1);	EmitVertex();
+	gl_Position = P * (jit_in[0].prevPos + vec4(+right + up, 0));		corner = vec2(+1, +1);	EmitVertex();
+	
+	EndPrimitive();
+}
+]]>
+		</program>
+		<program name="fp" type="fragment">
+<![CDATA[
+#version 330 core
+
+in jit_PerVertex {
+	flat vec4 color;
+	smooth vec2 corner;
+} jit_in;
+
+out vec4 color;
+
+void main() {
+	float dist = length(jit_in.corner);
+	if(dist > 1) discard;
+	color.rgb = jit_in.color.rgb;
+	color.a = smoothstep(0,1, 1 - dist);
+}	
+]]>
+		</program>
+	</language>
+</jittershader>
