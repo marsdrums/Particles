@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 100.0, 1432.0, 898.0 ],
+		"rect" : [ 34.0, 100.0, 1207.0, 898.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,13 +40,30 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 430.5, 673.0, 162.0, 22.0 ],
+					"saved_object_attributes" : 					{
+						"filename" : "particles.force.stigmergy.js",
+						"parameter_enable" : 0
+					}
+,
+					"text" : "js particles.force.stigmergy.js"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-64",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 422.0, 349.0, 87.0, 22.0 ],
-					"text" : "loadmess 0.93"
+					"patching_rect" : [ 422.0, 349.0, 70.0, 22.0 ],
+					"text" : "loadmess 2"
 				}
 
 			}
@@ -230,7 +247,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 25.0, 460.0, 81.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "shape sphere"
 				}
 
@@ -652,7 +668,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 723.0, 41.0, 150.0, 368.0 ],
+					"patching_rect" : [ 703.0, 9.0, 150.0, 368.0 ],
 					"text" : "EMITTERS:\n-point\n-line\n-shape\n-model\n-random\n\nTRANSFORMERS:\n-size\n-color\n-mass\n-custom_attr\n\nSPLITTERS:\n-split\n\nFORCES:\n-attractor\n-gravity\n-field\n-flock\n-stigmergy\n\nBOUNDARIES:\n-shape\n\nRENDER"
 				}
 
@@ -1137,6 +1153,13 @@
 			}
 , 			{
 				"name" : "particles.force.gravity.js",
+				"bootpath" : "~/Documents/GitHub/Particles/javascript",
+				"patcherrelativepath" : "../javascript",
+				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "particles.force.stigmergy.js",
 				"bootpath" : "~/Documents/GitHub/Particles/javascript",
 				"patcherrelativepath" : "../javascript",
 				"type" : "TEXT",

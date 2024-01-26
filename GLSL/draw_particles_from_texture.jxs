@@ -1,0 +1,85 @@
+<jittershader name="fill-flat-quads">
+	<description>Default Shader </description>
+	<param name="MV" type="mat4" state="MODELVIEW_MATRIX" />
+	<param name="P" type="mat4" state="PROJECTION_MATRIX" />
+	<param name="uv" type="vec2" state="TEXCOORD" />
+	<param name="posAge" type="int" default="0" />
+
+	<language name="glsl" version="1.5">
+		<bind param="MV" program="vp" />
+		<bind param="P" program="gp" />
+		<bind param="uv" program="vp" />
+		<bind param="posAge" program="vp" />
+		<program name="vp" type="vertex">
+<![CDATA[
+#version 330 core
+uniform mat4 MV;
+uniform sampler2DRect posAge;
+in vec2 uv;
+
+out jit_PerVertex {
+	flat float draw;
+} jit_out;
+
+void main() {	
+	vec4 lookup = texture(posAge, uv);
+	gl_Position = MV * vec4(lookup.xyz, 1.);	
+	jit_out.draw = lookup.w;
+}
+]]>
+		</program>
+		<program name="gp" output_type="triangle_strip" type="geometry">
+<![CDATA[
+#version 330 core
+#define size 0.01
+
+layout (points) in;
+layout (triangle_strip, max_vertices=4) out;
+
+uniform mat4 P;
+
+in jit_PerVertex {	
+	flat float draw;
+} jit_in[];
+
+out jit_PerVertex {
+	flat vec4 color;	
+	smooth vec2 corner;
+};
+
+void main() {
+
+	if(jit_in[0].draw == -1) return;
+
+	color = vec4(1);
+	gl_Position = P * (gl_in[0].gl_Position + vec4(-size, -size, 0, 0));	corner = vec2(-1, -1);	EmitVertex();
+	gl_Position = P * (gl_in[0].gl_Position + vec4(+size, -size, 0, 0));	corner = vec2(+1, -1);	EmitVertex();
+	gl_Position = P * (gl_in[0].gl_Position + vec4(-size, +size, 0, 0));	corner = vec2(-1, +1);	EmitVertex();
+	gl_Position = P * (gl_in[0].gl_Position + vec4(+size, +size, 0, 0));	corner = vec2(+1, +1);	EmitVertex();
+	
+	EndPrimitive();
+}
+]]>
+		</program>
+		<program name="fp" type="fragment">
+<![CDATA[
+#version 330 core
+
+in jit_PerVertex {
+	flat vec4 color;
+	smooth vec2 corner;
+} jit_in;
+
+out vec4 color;
+
+void main() {
+
+	float dist = length(jit_in.corner);
+	if(dist > 1) discard;
+	color.rgb = jit_in.color.rgb;
+	color.a = 0.5;
+}	
+]]>
+		</program>
+	</language>
+</jittershader>

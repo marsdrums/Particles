@@ -1,7 +1,7 @@
 autowhatch = 1; inlets = 1; outlets = 1;
 
 //global variables
-particles = new Array(1000);
+particles = new Array(3000);
 for(var i = 0; i < particles.length; i++){
 	particles[i] = { 	pos: [0,0,0], 
 						prevpos: [0,0,0],
@@ -12,7 +12,7 @@ for(var i = 0; i < particles.length; i++){
 }
 
 //local variables
-var rate = 3;
+var rate = 10;
 var accumulation = 0;
 var initial = {	speed: 0.02,
 				mass: 1,
@@ -25,7 +25,7 @@ function position(x, y, z){ initial.pos = [x, y, z]; }
 
 function reset(){
 
-	particles = new Array(1000);
+	particles = new Array(3000);
 	for(var i = 0; i < particles.length; i++){
 		particles[i] = { 	pos: [0,0,0], 
 							prevpos: [0,0,0],
