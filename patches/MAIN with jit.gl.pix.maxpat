@@ -583,7 +583,7 @@
  ]
 					}
 ,
-					"patching_rect" : [ 675.0, 850.0, 490.0, 22.0 ],
+					"patching_rect" : [ 675.0, 850.0, 485.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"description" : "",
 						"digest" : "",
@@ -591,7 +591,7 @@
 						"tags" : ""
 					}
 ,
-					"text" : "p particle.baundary.sphere @sphere_center 1 0 0 @surface_softness 2 @sphere_radius 2"
+					"text" : "p particle.obstacle.sphere @sphere_center 1 0 0 @surface_softness 2 @sphere_radius 2"
 				}
 
 			}
@@ -7907,7 +7907,6 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-23",
@@ -9209,7 +9208,7 @@
 				"patchline" : 				{
 					"color" : [ 1.0, 0.0, 0.0, 1.0 ],
 					"destination" : [ "obj-84", 0 ],
-					"midpoints" : [ 683.5, 975.0, 849.5, 975.0, 849.5, 313.0, 684.5, 313.0 ],
+					"midpoints" : [ 683.5, 975.0, 826.5, 975.0, 826.5, 313.0, 684.5, 313.0 ],
 					"source" : [ "obj-100", 0 ]
 				}
 
