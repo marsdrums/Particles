@@ -1,0 +1,412 @@
+<jittershader name="default">
+	<description>Default Slab </description>
+	<param name="posAgeTex" type="int" default="0" />
+	<param name="velMassTex" type="int" default="1" />
+	<param name="idStateTex" type="int" default="2" />
+
+	<param name="forcesTex" type="int" default="3" />
+	<param name="obstaclesTex" type="int" default="4" />
+	<param name="noiseTex" type="int" default="5" />
+	<texture file="stbn_vec3_2Dx1D_128x128x64_4.png" type="float16" unit="5" rectangle="1" filter="none none" wrap="repeat repeat"/>	
+	<param name="noiseTex2" type="int" default="6" />
+	<texture file="stbn_vec3_2Dx1D_128x128x64_4.png" type="float16" unit="6" rectangle="1" filter="none none" wrap="repeat repeat"/>
+	
+	<param name="drag" type="float" default="0." />
+	<param name="field_offset" type="vec3" default="0. 0. 0." />
+	<param name="field_scale" type="vec3" default="1. 1. 1." />
+	<param name="field_intensity" type="float" default="0.05" />
+	<param name="field_octaves" type="int" default="3" />
+	<param name="field_type" type="int" default="0" />
+	
+	<param name="texDim" type="vec2" state="TEXDIM0" />
+	<param name="MVP" type="mat4" state="MODELVIEW_PROJECTION_MATRIX" />
+	<param name="pos" type="vec3" state="POSITION" />
+	<param name="uv" type="vec2" state="TEXCOORD" />
+
+	<language name="glsl" version="1.5">
+		<bind param="posAgeTex" program="fp" />
+		<bind param="velMassTex" program="fp" />
+		<bind param="idStateTex" program="fp" />
+
+		<bind param="forcesTex" program="fp" />
+		<bind param="obstaclesTex" program="fp" />
+		<bind param="noiseTex" program="fp" />
+		<bind param="noiseTex2" program="fp" />
+
+		<bind param="drag" program="fp" />
+		<bind param="field_offset" program="fp" />
+		<bind param="field_scale" program="fp" />
+		<bind param="field_intensity" program="fp" />
+		<bind param="field_octaves" program="fp" />
+		<bind param="field_type" program="fp" />
+
+		<bind param="texDim" program="vp" />
+		<bind param="texDim" program="fp" />
+		<bind param="MVP" program="vp" />
+		<bind param="pos" program="vp" />
+		<bind param="uv" program="vp" />
+
+<program name="vp" type="vertex"  >
+<![CDATA[
+#version 330 core
+			
+in vec3 pos;
+in vec2 uv;
+in vec4 color;
+
+out jit_PerVertex {
+	smooth vec2 uv;
+} jit_out;
+
+uniform mat4 MVP;
+uniform vec2 texDim;
+
+void main(void) {
+	gl_Position = MVP*vec4(pos, 1.);
+	jit_out.uv = texDim*vec2(uv.x, 1-uv.y);
+}
+]]>
+	</program>
+<program name="fp" type="fragment"  >
+<![CDATA[
+#version 330 core
+#define PI 3.1415926535897932
+
+in jit_PerVertex {
+	smooth vec2 uv;
+} jit_in;
+
+layout (location = 0) out vec4 outPosAge;
+layout (location = 1) out vec4 outVelMass;
+layout (location = 2) out vec4 outIdState;
+
+uniform sampler2DRect posAgeTex, velMassTex, idStateTex, forcesTex, obstaclesTex, noiseTex, noiseTex2;
+uniform vec2 texDim;
+uniform vec3 field_offset, field_scale;
+uniform float drag, field_intensity;
+uniform int field_octaves, field_type;
+
+struct particle{
+	vec3 pos;
+	vec3 vel;
+	vec3 dir;
+	float id;
+	float mass;
+	float state;
+	float age;
+};
+
+struct force{
+	vec3 pos_dir;
+	float type;
+	float amount;
+};
+
+struct obstacle{
+	vec3 pos;
+	vec3 dir;
+	float softness;
+	float type;
+	float radius;
+	float action;
+};
+
+float computeID(){ return floor(jit_in.uv.x + jit_in.uv.y*texDim.x); }
+bool isStuck(in particle p){ return p.state == 1; }
+bool isDead(in particle p){ return p.state == 0; }
+
+void getCurrentState(out particle p){
+	vec4 posAge = texture(posAgeTex, jit_in.uv);
+	vec4 velMass = texture(velMassTex, jit_in.uv);
+	vec2 idState = texture(idStateTex, jit_in.uv).xy;
+	p.pos = posAge.xyz;
+	p.age = posAge.a;
+	p.vel = velMass.xyz;
+	p.mass = velMass.a;
+	p.state = idState.y;
+	p.id = computeID(); //i can remove this from here since i don't need the particle ID
+}
+
+vec3 gravity(in particle p, in force f){ return f.pos_dir * f.amount / p.mass; }
+
+vec3 attractor(in particle p, in force f){
+
+	vec3 attraction = f.pos_dir - p.pos;
+	float dist = length(attraction);
+	dist *= dist;
+	dist += 0.01;
+	float attraction_force = f.amount / dist;
+	attraction *= attraction_force;
+	return attraction / p.mass;
+}
+
+//ray-surface intersection function______________________________
+
+float sphere_intersect(in particle p, in obstacle o, out vec3 hit_normal){
+
+    vec3 oc = p.pos - o.pos;
+    float b = dot( oc, p.dir );
+    float c = dot( oc, oc ) - o.radius*o.radius;
+    float h = b*b - c;
+    if( h<0.0 ) return -1; // no intersection
+	h = sqrt(h);
+	float t0 = -b-h;
+	if(c <= 0) t0 = -b+h;
+	hit_normal = normalize(oc + p.dir*t0); 
+	return t0;
+	//if(c > 0) return -b-h;
+    //return -b-h;
+}
+
+float plane_intersect(in particle p, in obstacle o, out vec3 hit_normal){
+	
+    float denom = dot(o.dir, p.dir);
+    if(denom <= 1e-6) return -1;
+    vec3 p0l0 = o.pos - p.pos;
+    hit_normal = o.dir;
+    return dot(p0l0, o.dir) / denom; 
+}
+
+void applyForces(inout particle p){
+
+	float numForces = texture(forcesTex, vec2(0,0)).x;
+	if(numForces == 0) return;
+
+	force f;
+
+	for(float i = 1; i <= numForces; i+=1){
+		vec4 lookup0 = texture(forcesTex, vec2(i,0));
+		vec4 lookup1 = texture(forcesTex, vec2(i,1));
+		f.pos_dir = lookup0.rgb;
+		f.type = lookup0.a;
+		f.amount = lookup1.a;
+		p.vel += f.type == 1 ? 	gravity(p, f) : 
+								attractor(p, f);
+	}
+}
+
+void applyObstacles(inout particle p){
+
+	float numObstacles = texture(obstaclesTex, vec2(0,0)).x;
+	if(numObstacles == 0) return;
+	
+	obstacle o;
+
+	float vel_length = length(p.vel);
+	p.dir = p.vel / vel_length;
+
+	for(float i = 1; i <= numObstacles; i+=1){
+
+		vec4 lookup0 = texture(obstaclesTex, vec2(i,0));
+		vec4 lookup1 = texture(obstaclesTex, vec2(i,1));
+		vec4 lookup2 = texture(obstaclesTex, vec2(i,2));
+		o.type = lookup0.a;
+		o.dir = lookup0.rgb;
+		o.radius = lookup1.a;
+		o.pos = lookup1.rgb;
+		o.softness = lookup2.a;
+		o.action = lookup2.r;
+
+		vec3 hit_normal;
+
+		float t0 = o.type == 0 ? 	plane_intersect(p, o, hit_normal) :
+									sphere_intersect(p, o, hit_normal);
+						 			
+		if(t0 > vel_length || t0 < 0) continue;
+
+		p.pos += p.dir*t0;
+		p.state = o.action;
+		p.dir = reflect(p.dir, hit_normal);
+		p.vel = p.dir*(vel_length - t0);
+		p.vel /= o.softness + 1;
+		//p.pos += p.vel;
+		return;
+	}
+}
+
+void applyDrag(inout particle p){ 
+
+	if(isDead(p) || isStuck(p)) return;
+	p.vel /= drag/p.mass + 1; 
+}
+
+float hashfloat(float h){
+	return fract(sin(h) * 43758.5453123);
+}
+
+float noisefloat(vec3 x) {
+	vec3 p = floor(x);
+	vec3 f = fract(x);
+	f = f * f * (3.0 - 2.0 * f);
+
+	float n = p.x + p.y * 157.0 + 113.0 * p.z;
+	return mix(
+			mix(mix(hashfloat(n + 0.0), hashfloat(n + 1.0), f.x),
+					mix(hashfloat(n + 157.0), hashfloat(n + 158.0), f.x), f.y),
+			mix(mix(hashfloat(n + 113.0), hashfloat(n + 114.0), f.x),
+					mix(hashfloat(n + 270.0), hashfloat(n + 271.0), f.x), f.y), f.z);
+}
+
+float fbmfloat(vec3 p) {
+	float f = 0.0;
+	float q = 0.5;
+	float g = 2.02;
+	for(int i = 0; i < field_octaves; i++){
+		f += q * (noisefloat(p)*2 - 1);
+		q *= 0.5;
+		p *= g;
+	}
+	return f;
+}
+
+vec3 hash(float h) {
+
+	float sinh = sin(h);
+	return vec3(	fract(sinh * 43758.5453123),
+					fract(sinh * 82993.1772119),
+					fract(sinh * 71003.3746183));
+
+}
+
+vec3 noise(vec3 x) {
+	vec3 p = floor(x);
+	vec3 f = fract(x);
+	f = f * f * (3.0 - 2.0 * f);
+
+	float n = p.x + p.y * 157.0 + 113.0 * p.z;
+	return mix(
+			mix(mix(hash(n + 0.0), hash(n + 1.0), f.x),
+					mix(hash(n + 157.0), hash(n + 158.0), f.x), f.y),
+			mix(mix(hash(n + 113.0), hash(n + 114.0), f.x),
+					mix(hash(n + 270.0), hash(n + 271.0), f.x), f.y), f.z);
+}
+
+vec3 fbm(vec3 p) {
+	vec3 f = vec3(0.0);
+	float q = 0.5;
+	float g = 2.02;
+	for(int i = 0; i < field_octaves; i++){
+		f += q * (noise(p)*2 - 1);
+		q *= 0.5;
+		p *= g;
+	}
+	return f;
+}
+
+vec3 force_field(in particle p){
+	return p.vel + field_intensity*fbm(p.pos * field_scale + field_offset) / p.mass;
+}
+
+vec3 rotateVector(vec3 v, float xRad, float yRad, float zRad) {
+    
+    // Compute sines and cosines
+    float sx = sin(xRad);
+    float cx = cos(xRad);
+    float sy = sin(yRad);
+    float cy = cos(yRad);
+    float sz = sin(zRad);
+    float cz = cos(zRad);
+
+    // Rotation matrix for x-axis
+    mat3 Rx = mat3(1.0, 0.0, 0.0,
+                    0.0, cx, -sx,
+                    0.0, sx, cx);
+
+    // Rotation matrix for y-axis
+    mat3 Ry = mat3(cy, 0.0, sy,
+                    0.0, 1.0, 0.0,
+                    -sy, 0.0, cy);
+
+    // Rotation matrix for z-axis
+    mat3 Rz = mat3(cz, -sz, 0.0,
+                    sz, cz, 0.0,
+                    0.0, 0.0, 1.0);
+
+    // Combine rotation matrices
+    mat3 R = Rz * Ry * Rx;
+
+    // Rotate the vector
+    return R * v;
+}
+
+vec3 rotational_field(in particle p){
+
+	vec3 a = fbm(p.pos*field_scale + field_offset);
+	//a *= field_intensity;
+	//return length(p.vel)*rotateVector(normalize(p.vel), a.x, a.y, a.z);
+
+	a *= field_intensity;
+	a *= PI;
+	vec3 cosa = cos(a);
+	vec3 sina = sin(a);
+	float vel_length = length(p.vel);
+	p.dir = p.vel / vel_length;
+
+	p.dir.x = p.dir.x*cosa.z - p.dir.y*sina.z;
+	p.dir.y = p.dir.x*sina.z + p.dir.y*cosa.z;
+
+	p.dir.x = p.dir.x*cosa.y - p.dir.z*sina.y;
+	p.dir.z = -p.dir.x*sina.y + p.dir.z*cosa.y;
+
+	p.dir.y = p.dir.y*cosa.x - p.dir.z*sina.x;
+	p.dir.z = p.dir.y*sina.x + p.dir.z*cosa.x;
+
+	return p.dir * vel_length;
+
+}
+
+vec3 acceleration_field(in particle p){
+	return p.vel + p.vel * fbmfloat(p.pos * field_scale + field_offset)*field_intensity / p.mass;
+}
+
+vec3 drag_field(in particle p){
+	return p.vel / (abs(fbmfloat(p.pos * field_scale + field_offset))*field_intensity / p.mass + 1);
+}
+
+void field(inout particle p){
+
+	if(field_type == 0){
+		p.vel = force_field(p);
+		return;
+	}
+	if(field_type == 1){
+		p.vel = rotational_field(p);
+		return;
+	}
+	if(field_type == 2){
+		p.vel = acceleration_field(p);
+		return;
+	}
+
+	p.vel = drag_field(p);
+}
+
+void outputTextures(in particle p){
+	outPosAge = vec4(p.pos, p.age);
+	outVelMass = vec4(p.vel, p.mass);
+	outIdState = vec4(p.id, p.state, 0, 0);
+}
+
+void main(void) {
+
+	particle p;
+
+	getCurrentState(p);
+
+	if(isDead(p) || isStuck(p)){
+		outputTextures(p);
+		return;
+	}
+
+	applyForces(p);
+	field(p);
+	applyObstacles(p);
+	applyDrag(p);
+
+	outputTextures(p);
+
+}
+		]]>
+		</program>
+	</language>
+</jittershader>

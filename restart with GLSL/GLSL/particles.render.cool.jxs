@@ -11,7 +11,7 @@
 	<param name="nearClip" type="float" state="NEAR_CLIP" />
 	<param name="focus" type="float" default="1" />
 	<param name="dof" type="float" default="0" />
-	<param name="size" type="float" default="0.003" />
+	<param name="size" type="float" default="0.002" />
 	<param name="alpha" type="float" default="0.3" />
 
 	<language name="glsl" version="1.5">
@@ -80,10 +80,11 @@ void main() {
 	vec4 lookup = texture(prevPosTex, jit_in[0].uv);
 	float prev_draw = lookup.w;
 
-	if(jit_in[0].draw == -1 || prev_draw == -1) return;
+	if(jit_in[0].draw == 0. || prev_draw == 0.) return;
 
 	vec4 currPos = MV * gl_in[0].gl_Position;
 	vec4 prevPos = MV * vec4(lookup.xyz, 1);
+	if(jit_in[0].draw != prev_draw) prevPos = currPos;
 	vec4 currPosProj = P * currPos;
 	vec4 prevPosProj = P * prevPos;
 
