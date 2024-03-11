@@ -69,7 +69,7 @@
 					"numinlets" : 3,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 195.0, 635.0, 341.0, 22.0 ],
+					"patching_rect" : [ 195.0, 643.0, 201.666666666666629, 22.0 ],
 					"text" : "pack s s s"
 				}
 
@@ -81,7 +81,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 517.0, 600.0, 29.5, 22.0 ],
+					"patching_rect" : [ 377.666666666666629, 607.0, 29.5, 22.0 ],
 					"text" : "$2"
 				}
 
@@ -93,7 +93,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 356.0, 600.0, 29.5, 22.0 ],
+					"patching_rect" : [ 286.333333333333314, 607.0, 29.5, 22.0 ],
 					"text" : "$2"
 				}
 
@@ -105,7 +105,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 195.25, 600.0, 29.5, 22.0 ],
+					"patching_rect" : [ 195.0, 607.0, 29.5, 22.0 ],
 					"text" : "$2"
 				}
 
@@ -119,245 +119,6 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 333.0, 198.0, 39.0, 22.0 ],
 					"text" : "$1 $4"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-9",
-					"maxclass" : "newobj",
-					"numinlets" : 7,
-					"numoutlets" : 3,
-					"outlettype" : [ "jit_gl_texture", "jit_gl_texture", "" ],
-					"patcher" : 					{
-						"fileversion" : 1,
-						"appversion" : 						{
-							"major" : 9,
-							"minor" : 0,
-							"revision" : 0,
-							"architecture" : "x64",
-							"modernui" : 1
-						}
-,
-						"classnamespace" : "jit.gen",
-						"rect" : [ 860.0, 353.0, 849.0, 823.0 ],
-						"bglocked" : 0,
-						"openinpresentation" : 0,
-						"default_fontsize" : 12.0,
-						"default_fontface" : 0,
-						"default_fontname" : "Arial",
-						"gridonopen" : 1,
-						"gridsize" : [ 15.0, 15.0 ],
-						"gridsnaponopen" : 1,
-						"objectsnaponopen" : 1,
-						"statusbarvisible" : 2,
-						"toolbarvisible" : 1,
-						"lefttoolbarpinned" : 0,
-						"toptoolbarpinned" : 0,
-						"righttoolbarpinned" : 0,
-						"bottomtoolbarpinned" : 0,
-						"toolbars_unpinned_last_save" : 0,
-						"tallnewobj" : 0,
-						"boxanimatetime" : 200,
-						"enablehscroll" : 1,
-						"enablevscroll" : 1,
-						"devicewidth" : 0.0,
-						"description" : "",
-						"digest" : "",
-						"tags" : "",
-						"style" : "",
-						"subpatcher_template" : "",
-						"assistshowspatchername" : 0,
-						"boxes" : [ 							{
-								"box" : 								{
-									"id" : "obj-10",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 630.0, 32.0, 28.0, 22.0 ],
-									"text" : "in 7"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-9",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 533.333333333333258, 32.0, 28.0, 22.0 ],
-									"text" : "in 6"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-8",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 436.666666666666686, 32.0, 28.0, 22.0 ],
-									"text" : "in 5"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-7",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 340.0, 32.0, 28.0, 22.0 ],
-									"text" : "in 4"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-3",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 243.333333333333343, 32.0, 28.0, 22.0 ],
-									"text" : "in 3"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-2",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 626.5, 666.0, 35.0, 22.0 ],
-									"text" : "out 2"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-6",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 146.666666666666686, 32.0, 28.0, 22.0 ],
-									"text" : "in 2"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"code" : "//utilities______________________________________________________\r\n\r\nis_alive(age){\r\n\treturn age > -1;\r\n}\r\n\r\n//attractive forces______________________________________________\r\n\r\ngravity(dir, amt, mass){\r\n\treturn dir*amt/mass;\r\n}\r\n\r\nattractor(pos, attr_pos, amt, mass){\r\n\r\n\tattraction = attr_pos - pos;\r\n\tdist = length(attraction);\r\n\tdist *= dist;\r\n\tdist += 0.01;\r\n\tattraction_force = amt / dist;\r\n\tattraction *= attraction_force;\r\n\treturn attraction / mass;\r\n}\r\n\r\n//ray-surface intersection function______________________________\r\n\r\nsphere_intersect(ro, rd, ce, ra){\n\n    oc = ro - ce;\n    b = dot( oc, rd );\n    c = dot( oc, oc ) - ra*ra;\n    h = b*b - c;\n    if( h<0.0 ) return -1; // no intersection\r\n\th = sqrt(h);\r\n\treturn -b-h;\r\n\t//if(c > 0) return -b-h;\n    //return -b-h;\n}\r\n\r\nplane_intersect(ro, rd, pos, n){\r\n\t\n    denom = dot(n, rd);\n    if(denom <= 1e-6) return -1;\n    p0l0 = pos - ro;\n    return dot(p0l0, n) / denom; \n}\r\n\r\n//____________________________ MAIN ________________________________//\r\n\r\nParam drag(0.0);\r\n\r\npos = in1.xyz;\r\nage = in1.w;\r\nvel = in2.xyz;\r\nmass = in2.w;\r\n\r\nif(is_alive(age)){\r\n\r\n\t//Apply attractive forces\r\n\tnumForces = sample(in3, vec(0,0)).x*0.01;\r\n\r\n\tfor(i = 0.01; i <= numForces; i+= 0.01){\r\n\t\tlookup0 = sample(in3, vec(i,0));\r\n\t\tlookup1 = sample(in4, vec(i,0));\r\n\t\tdir_pos = lookup0.rgb;\r\n\t\ttype = lookup0.a;\r\n\t\tamt = lookup1.a;\r\n\t\tvel += type == 1 ? \tgravity(dir_pos, amt, mass) : \r\n\t\t\t\t\t\tattractor(pos, dir_pos, amt, mass);\r\n\r\n\t}\r\n\t\r\n\t//Apply obstacles\r\n\tnumObstacles = sample(in5, vec(0,0)).x*0.01;\r\n\t\r\n\tfor(i = 0.01; i <= numObstacles; i+= 0.01){\r\n\t\tlookup0 = sample(in5, vec(i,0));\r\n\t\tlookup1 = sample(in6, vec(i,0));\r\n\t\tsoftness = sample(in7, vec(i,0)).x;\r\n\t\ttype = lookup0.a;\r\n\t\tobstacle_dir = lookup0.rgb;\r\n\t\tradius = lookup1.a;\r\n\t\tobstacle_pos = lookup1.rgb;\r\n\r\n\t\tvel_length = length(vel);\r\n\t\tdir = vel / vel_length;\r\n\r\n\t\tt0 = type == 1 ? sphere_intersect(pos, dir, obstacle_pos, radius) :\r\n\t\t\t\t\t\t plane_intersect(pos, dir, obstacle_pos, obstacle_dir);\r\n\t\r\n\t\tif(t0 <= vel_length && t0 > 0){\r\n\t\t\t\r\n\t\t\thit_normal = type == 1 ? normalize( pos + dir*t0 - obstacle_pos) :\r\n\t\t\t\t\t\t\t\t \tobstacle_dir;\n\t\t\tr = reflect(dir, hit_normal);\n\t\t\tvel_length /= (softness + 1);\r\n\t\t\tvel = r*vel_length;\n\t\t}\r\n\t}\r\n\t\r\n\t//apply drag\r\n\tvel /= drag/mass + 1;\r\n\t\r\n}\r\n\r\nout1 = vec(pos.x, pos.y, pos.z, age);\r\nout2 = vec(vel.x, vel.y, vel.z, mass);\r\n",
-									"fontface" : 0,
-									"fontname" : "<Monospaced>",
-									"fontsize" : 12.0,
-									"id" : "obj-5",
-									"maxclass" : "codebox",
-									"numinlets" : 7,
-									"numoutlets" : 2,
-									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 50.0, 88.0, 599.0, 530.0 ]
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-1",
-									"maxclass" : "newobj",
-									"numinlets" : 0,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 50.0, 32.0, 28.0, 22.0 ],
-									"text" : "in 1"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-4",
-									"maxclass" : "newobj",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 50.0, 675.0, 35.0, 22.0 ],
-									"text" : "out 1"
-								}
-
-							}
- ],
-						"lines" : [ 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 0 ],
-									"source" : [ "obj-1", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 6 ],
-									"source" : [ "obj-10", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 2 ],
-									"source" : [ "obj-3", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-2", 0 ],
-									"source" : [ "obj-5", 1 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-4", 0 ],
-									"source" : [ "obj-5", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 1 ],
-									"source" : [ "obj-6", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 3 ],
-									"source" : [ "obj-7", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 4 ],
-									"source" : [ "obj-8", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-5", 5 ],
-									"source" : [ "obj-9", 0 ]
-								}
-
-							}
- ]
-					}
-,
-					"patching_rect" : [ 931.0, 659.0, 648.0, 22.0 ],
-					"text" : "jit.gl.pix"
 				}
 
 			}
@@ -782,12 +543,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-52",
+					"linecount" : 2,
 					"maxclass" : "newobj",
-					"numinlets" : 8,
+					"numinlets" : 5,
 					"numoutlets" : 4,
 					"outlettype" : [ "jit_gl_texture", "jit_gl_texture", "jit_gl_texture", "" ],
-					"patching_rect" : [ 195.0, 563.0, 502.0, 22.0 ],
-					"text" : "jit.gl.slab @file particles.forces.jxs @inputs 8 @outputs 3"
+					"patching_rect" : [ 195.0, 563.0, 293.0, 35.0 ],
+					"text" : "jit.gl.slab @file particles.forces.jxs @inputs 5 @outputs 3"
 				}
 
 			}
@@ -799,7 +561,7 @@
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
+					"outlettype" : [ "int" ],
 					"patching_rect" : [ 195.0, 10.0, 30.0, 30.0 ]
 				}
 
