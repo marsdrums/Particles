@@ -3,14 +3,17 @@
 	<param name="posAgeTex" type="int" default="0" />
 	<param name="velMassTex" type="int" default="1" />
 	<param name="idStateTex" type="int" default="2" />
-	<param name="randTex" type="int" default="3" />
-	<texture file="stbn_unitvec3_2Dx1D_128x128x64_0.png" type="float16" unit="3" rectangle="1" filter="none none" wrap="repeat repeat"/>	
+	<param name="shapeProbTex" type="int" default="3" />
+	<param name="shapePosTex" type="int" default="4" />
+	<param name="shapeNorTex" type="int" default="5" />
+	<param name="randTex" type="int" default="6" />
+	<texture file="stbn_unitvec3_2Dx1D_128x128x64_0.png" type="float16" unit="6" rectangle="1" filter="none none" wrap="repeat repeat"/>	
 	<param name="texDim" type="vec2" state="TEXDIM0" />
 	<param name="MVP" type="mat4" state="MODELVIEW_PROJECTION_MATRIX" />
 	<param name="pos" type="vec3" state="POSITION" />
 	<param name="uv" type="vec2" state="TEXCOORD" />
 	<param name="counter" type="float" default="0." />
-	<param name="rate" type="float" default="30." />
+	<param name="rate" type="float" default="4000." />
 
 	<param name="initial_speed" type="float" default="0.01" />
 	<param name="initial_mass" type="float" default="1" />
@@ -18,11 +21,18 @@
 	<param name="initial_pos" type="vec3" default="0. 0. 0." />
 	<param name="prev_initial_pos" type="vec3" default="0. 0. 0." />
 	<param name="lifeStep" type="float" default="0.01" />
+	<param name="emitter_vel" type="vec3" default="0. 0. 0." />
+	<param name="prev_emitter_vel" type="vec3" default="0. 0. 0. " />
+	<param name="num_faces" type="vec2" state="TEXDIM3" />
+	<param name="emitter_mode" type="int" default="0" />
 
 	<language name="glsl" version="1.5">
 		<bind param="posAgeTex" program="fp" />
 		<bind param="velMassTex" program="fp" />
 		<bind param="idStateTex" program="fp" />
+		<bind param="shapeProbTex" program="fp" />
+		<bind param="shapePosTex" program="fp" />
+		<bind param="shapeNorTex" program="fp" />
 		<bind param="randTex" program="fp" />
 		<bind param="texDim" program="vp" />
 		<bind param="texDim" program="fp" />
@@ -38,6 +48,10 @@
 		<bind param="initial_pos" program="fp" />
 		<bind param="prev_initial_pos" program="fp" />
 		<bind param="lifeStep" program="fp" />
+		<bind param="emitter_vel" program="fp" />
+		<bind param="prev_emitter_vel" program="fp" />
+		<bind param="num_faces" program="fp" />
+		<bind param="emitter_mode" program="fp" />
 
 		<program name="vp" type="vertex"  >
 		<![CDATA[
@@ -74,11 +88,12 @@ layout (location = 0) out vec4 outPosAge;
 layout (location = 1) out vec4 outVelMass;
 layout (location = 2) out vec4 outIdState;
 
-uniform sampler2DRect posAgeTex, velMassTex, idStateTex, randTex;
+uniform sampler2DRect posAgeTex, velMassTex, idStateTex, randTex, shapeProbTex, shapePosTex, shapeNorTex;
 uniform float initial_mass, initial_speed, lifeStep;
-uniform vec3 initial_vel, initial_pos, prev_initial_pos;
+uniform vec3 initial_vel, initial_pos, prev_initial_pos, emitter_vel, prev_emitter_vel;
 uniform float counter, rate;
-uniform vec2 texDim;
+uniform vec2 texDim, num_faces, num_vertices;
+uniform int emitter_mode;
 
 struct particle{
 	vec3 pos;
@@ -90,8 +105,8 @@ struct particle{
 };
 
 //Random functions
-uint wang_hash(inout uint seed)
-{
+uint wang_hash(inout uint seed){
+
     seed = uint(seed ^ uint(61)) ^ uint(seed >> uint(16));
     seed *= uint(9);
     seed = seed ^ (seed >> 4);
@@ -100,13 +115,10 @@ uint wang_hash(inout uint seed)
     return seed;
 }
  
-float RandomFloat01(inout uint seed)
-{
-    return float(wang_hash(seed)) / 4294967296.0;
-}
+float RandomFloat01(inout uint seed) { return float(wang_hash(seed)) / 4294967296.0; }
 
-vec3 randomUnitVector(inout uint seed)
-{
+vec3 randomUnitVector(inout uint seed){
+
     float z = RandomFloat01(seed) * 2.0f - 1.0f;
     float a = RandomFloat01(seed) * TWOPI;
     float r = sqrt(1.0f - z * z);
@@ -115,10 +127,7 @@ vec3 randomUnitVector(inout uint seed)
     return vec3(x, y, z);
 }
 
-uint getRandSeed(vec2 uv){ 
-	return  uint(uv.x*3772) + uint(uv.y*78223); 
-}
-
+uint getRandSeed(){ return  uint(jit_in.uv.x*3772) * (uint(jit_in.uv.y*78223) + uint(1)) + uint(counter); }
 float computeID(){ return floor(jit_in.uv.x + jit_in.uv.y*texDim.x); }
 
 bool toKill(in particle part){ return part.age >= 1.; }
@@ -126,30 +135,62 @@ bool toGenerate(in particle part){ return part.id >= counter && part.id < counte
 bool toUpdate(in particle part){ return part.state != 0; }
 bool isDead(in particle part){ return part.state == 0; }
 bool isStuck(in particle part){ return part.state == 1; }
-/*
-vec3 randomUnitVec3(in particle part){
-	vec3 variate[8] = vec3[] (	vec3(-1, -1, -1),
-								vec3(+1, -1, -1),
-								vec3(-1, +1, -1),
-								vec3(+1, +1, -1),
-								vec3(-1, -1, +1),
-								vec3(+1, -1, +1),
-								vec3(-1, +1, +1),
-								vec3(+1, +1, +1));
 
-	return 	variate[int(floor(part.id/16384)) % 8] * 
-			(2*texture(randTex, vec2( mod(part.id, 128), mod(floor(part.id/128), 128))).xyz - 1);
-}
-*/
-void initializeParticles(inout particle part){
+void initialize_from_point(inout particle part){
 
-	uint seed = getRandSeed(jit_in.uv.xy);
-
-	part.pos = mix(initial_pos, prev_initial_pos, RandomFloat01(seed));
-	part.vel = randomUnitVector(seed) * initial_speed * (RandomFloat01(seed)*0.5 + 0.5);//initial_vel*initial_speed;
+	uint seed = getRandSeed();
+	float interp = RandomFloat01(seed);
+	part.pos = mix(initial_pos, prev_initial_pos, interp);
+	part.vel = randomUnitVector(seed) * initial_speed * (RandomFloat01(seed)*0.5 + 0.5);// + emitter_vel;//initial_vel*initial_speed;
+	part.vel += mix(emitter_vel, prev_emitter_vel, interp);
 	part.mass = initial_mass;// * (RandomFloat01(seed)*0.5 + 0.5);
 	part.state = 0.5;
+	part.age = 0;	
+}
+
+void initialize_from_shape(inout particle part){
+
+	uint seed = getRandSeed();
+
+    float column = floor(RandomFloat01(seed) * num_faces.x);
+    vec2 lookup = texture(shapeProbTex, vec2(column + 0.5, 0.5) ).rg;
+	float rand_face = RandomFloat01(seed) < lookup.x ? column : lookup.y;
+	
+	float rand_vert = rand_face*3 + 0.5;
+	vec2 v0 = vec2(rand_vert + 0, 0.5);
+	vec2 v1 = vec2(rand_vert + 1, 0.5);
+	vec2 v2 = vec2(rand_vert + 2, 0.5);
+	
+	vec3 p0 = texture(shapePosTex, v0).xyz;
+	vec3 p1 = texture(shapePosTex, v1).xyz;
+	vec3 p2 = texture(shapePosTex, v2).xyz;
+
+	vec3 n0 = texture(shapeNorTex, v0).xyz;
+	vec3 n1 = texture(shapeNorTex, v1).xyz;
+	vec3 n2 = texture(shapeNorTex, v2).xyz;
+
+	float u = RandomFloat01(seed);
+	float v = RandomFloat01(seed);
+
+	if( u+v > 1){
+		u = 1 - u;
+		v = 1 - v;
+	}
+
+	float c = 1 - u - v;
+	part.pos = u*p1 + v*p2 + c*p0; //u*(p1 - p0) + v*(p2 - p0) + p0; 	
+	part.vel = normalize(u*n1 + v*n2 + c*n0) * initial_speed;
+	//part.vel += mix(emitter_vel, prev_emitter_vel, RandomFloat01(seed));
+	//part.pos += part.vel*RandomFloat01(seed); // randomize the start position to avoid clustering
+	part.mass = initial_mass;
+	part.state = 0.5;
 	part.age = 0;
+}
+
+void initializeParticles(inout particle part){
+
+	if(emitter_mode == 0) initialize_from_point(part);  
+	if(emitter_mode == 1) initialize_from_shape(part); 
 }
 
 void killParticle(out particle part){ part.state = 0; }
@@ -162,9 +203,10 @@ void updateParticle(inout particle part){
 }
 
 void getCurrentState(out particle part){
-	vec4 posAge = texture(posAgeTex, jit_in.uv.xy);
-	vec4 velMass = texture(velMassTex, jit_in.uv.xy);
-	vec2 idState = texture(idStateTex, jit_in.uv.xy).xy;
+
+	vec4 posAge = texture(posAgeTex, jit_in.uv);
+	vec4 velMass = texture(velMassTex, jit_in.uv);
+	vec2 idState = texture(idStateTex, jit_in.uv).xy;
 	part.pos = posAge.xyz;
 	part.age = posAge.a;
 	part.vel = velMass.xyz;
@@ -174,6 +216,7 @@ void getCurrentState(out particle part){
 }
 
 void outputTextures(in particle part){
+
 	outPosAge = vec4(part.pos, part.age);
 	outVelMass = vec4(part.vel, part.mass);
 	outIdState = vec4(part.id, part.state, 0, 0);
@@ -185,19 +228,19 @@ void main(void) {
 
 	getCurrentState(part);
 
-	//kill
-	if(toKill(part)){
-		killParticle(part);
-		outputTextures(part);
-		return;
-	}
-
 	//generate
 	if(toGenerate(part)){
 		initializeParticles(part);
 		outputTextures(part);
 		return;
 	} 
+
+	//kill
+	if(toKill(part)){
+		killParticle(part);
+		outputTextures(part);
+		return;
+	}
 
 	//update
 	if(toUpdate(part)){

@@ -52,19 +52,19 @@ function get_random_value() {
 
 function dictionary(geomDict) {
 
-	var d = new Dict(geomDict);
-	var geomdict = JSON.parse(d.stringify());
-	var geom = geomdict.geomlist[0];
+    var d = new Dict(geomDict);
+    var geomdict = JSON.parse(d.stringify());
+    var geom = geomdict.geomlist[0];
 
-//	for(var k = 0; k < geomdict.geomlist_size; k++){
-//		geom = geomdict.geomlist[k];
-//	}
+//  for(var k = 0; k < geomdict.geomlist_size; k++){
+//      geom = geomdict.geomlist[k];
+//  }
 
     weights = [];
-	surface = 0;
-	for(var i = 0; i < geom.faces_size; i++){
+    surface = 0;
+    for(var i = 0; i < geom.faces_size; i++){
         surface += geom.faces[i].area;
-	}
+    }
 
     for(var i = 0; i < geom.faces_size; i++){
         weights.push(geom.faces[i].area/surface);

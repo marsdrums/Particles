@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 100.0, 1395.0, 898.0 ],
+		"rect" : [ 34.0, 100.0, 1023.0, 898.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,30 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-26",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1147.0, 343.0, 74.0, 22.0 ],
+					"text" : "loadmess -1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-14",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1227.0, 36.0, 74.0, 22.0 ],
+					"text" : "loadmess -1"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"format" : 6,
 					"id" : "obj-110",
@@ -219,7 +243,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 175.0, 248.0, 53.0, 22.0 ],
+									"patching_rect" : [ 255.0, 248.0, 53.0, 22.0 ],
 									"text" : "* 0 1 0 1"
 								}
 
@@ -288,15 +312,8 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-6", 0 ],
-									"source" : [ "obj-5", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
 									"destination" : [ "obj-4", 0 ],
-									"source" : [ "obj-6", 0 ]
+									"source" : [ "obj-5", 0 ]
 								}
 
 							}
@@ -779,18 +796,6 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-40",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "jit_geometry", "" ],
-					"patching_rect" : [ 731.0, 311.0, 94.0, 22.0 ],
-					"text" : "jit.geom.remesh"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"format" : 6,
 					"id" : "obj-38",
 					"maxclass" : "flonum",
@@ -811,30 +816,6 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 569.0, 615.0, 73.0, 22.0 ],
 					"text" : "prepend dof"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-30",
-					"maxclass" : "button",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "bang" ],
-					"parameter_enable" : 0,
-					"patching_rect" : [ 732.0, 249.0, 24.0, 24.0 ]
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-28",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "jit_geometry", "" ],
-					"patching_rect" : [ 730.0, 287.0, 164.0, 22.0 ],
-					"text" : "jit.geom.shape @shape cube"
 				}
 
 			}
@@ -3287,7 +3268,6 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-7",
@@ -6565,6 +6545,29 @@
 						"assistshowspatchername" : 0,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-9",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 1267.0, 490.0, 32.0, 22.0 ],
+									"text" : "print"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-1",
+									"maxclass" : "jit.pwindow",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "jit_matrix", "" ],
+									"patching_rect" : [ 1114.0, 411.0, 80.0, 60.0 ],
+									"sync" : 1
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-16",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
@@ -6606,7 +6609,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 1019.0, 309.0, 91.0, 22.0 ],
+									"patching_rect" : [ 1019.0, 281.0, 91.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"filename" : "matrix2row.js",
 										"parameter_enable" : 0
@@ -7447,7 +7450,24 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-1", 0 ],
+									"order" : 1,
+									"source" : [ "obj-31", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-24", 0 ],
+									"order" : 2,
+									"source" : [ "obj-31", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-9", 0 ],
+									"order" : 0,
 									"source" : [ "obj-31", 0 ]
 								}
 
@@ -7877,19 +7897,6 @@
 				}
 
 			}
-, 			{
-				"box" : 				{
-					"attr" : "shape",
-					"id" : "obj-31",
-					"maxclass" : "attrui",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"parameter_enable" : 0,
-					"patching_rect" : [ 759.0, 257.0, 150.0, 22.0 ]
-				}
-
-			}
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
@@ -8061,6 +8068,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-138", 1 ],
 					"source" : [ "obj-139", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-85", 0 ],
+					"source" : [ "obj-14", 0 ]
 				}
 
 			}
@@ -8514,15 +8528,15 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-25", 0 ],
-					"source" : [ "obj-27", 0 ]
+					"destination" : [ "obj-152", 0 ],
+					"source" : [ "obj-26", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-40", 0 ],
-					"source" : [ "obj-28", 0 ]
+					"destination" : [ "obj-25", 0 ],
+					"source" : [ "obj-27", 0 ]
 				}
 
 			}
@@ -8537,20 +8551,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-3", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-28", 0 ],
-					"source" : [ "obj-30", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-28", 0 ],
-					"source" : [ "obj-31", 0 ]
 				}
 
 			}
@@ -8865,14 +8865,6 @@
 			}
  ],
 		"dependency_cache" : [ 			{
-				"name" : "jit.geom.remesh.mxo",
-				"type" : "iLaX"
-			}
-, 			{
-				"name" : "jit.geom.shape.mxo",
-				"type" : "iLaX"
-			}
-, 			{
 				"name" : "matrix2row.js",
 				"bootpath" : "~/Documents/GitHub/Particles/javascript",
 				"patcherrelativepath" : "../javascript",
