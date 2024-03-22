@@ -40,6 +40,28 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-157",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 771.0, 630.0, 35.0, 20.0 ],
+					"text" : "force"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-122",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 702.0, 504.0, 35.0, 20.0 ],
+					"text" : "force"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-110",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -1474,11 +1496,11 @@
 					"bgcolor" : [ 0.364705882352941, 0.611764705882353, 0.309803921568627, 1.0 ],
 					"id" : "obj-139",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 808.0, 630.0, 35.0, 22.0 ],
-					"text" : "force"
+					"outlettype" : [ "int" ],
+					"patching_rect" : [ 808.0, 630.0, 29.5, 22.0 ],
+					"text" : "+"
 				}
 
 			}
@@ -2678,11 +2700,11 @@
 					"bgcolor" : [ 0.549019607843137, 0.274509803921569, 0.686274509803922, 1.0 ],
 					"id" : "obj-161",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 898.0, 788.0, 53.0, 22.0 ],
-					"text" : "obstacle"
+					"outlettype" : [ "int" ],
+					"patching_rect" : [ 898.0, 788.0, 29.5, 22.0 ],
+					"text" : "+"
 				}
 
 			}
@@ -2906,11 +2928,11 @@
 					"bgcolor" : [ 0.364705882352941, 0.611764705882353, 0.309803921568627, 1.0 ],
 					"id" : "obj-46",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 751.0, 503.0, 35.0, 22.0 ],
-					"text" : "force"
+					"outlettype" : [ "int" ],
+					"patching_rect" : [ 751.0, 503.0, 29.5, 22.0 ],
+					"text" : "+"
 				}
 
 			}
@@ -4063,27 +4085,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-101", 0 ],
-					"source" : [ "obj-6", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-94", 0 ],
-					"source" : [ "obj-6", 2 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-98", 0 ],
-					"source" : [ "obj-6", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-10", 0 ],
 					"source" : [ "obj-60", 0 ]
 				}
@@ -4107,6 +4108,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-73", 0 ],
 					"source" : [ "obj-63", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-69", 0 ],
+					"source" : [ "obj-65", 0 ]
 				}
 
 			}
@@ -4393,13 +4401,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "force.maxpat",
-				"bootpath" : "~/Documents/GitHub/Particles/restart with GLSL/patches",
-				"patcherrelativepath" : ".",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "function2matrix.js",
 				"bootpath" : "~/Documents/GitHub/Particles/restart with GLSL/javascript",
 				"patcherrelativepath" : "../javascript",
@@ -4425,13 +4426,6 @@
 , 			{
 				"name" : "jit.gradient.ui.maxpat",
 				"bootpath" : "C74:/packages/Jitter Tools/patchers/abstractions",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "obstacle.maxpat",
-				"bootpath" : "~/Documents/GitHub/Particles/restart with GLSL/patches",
-				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
