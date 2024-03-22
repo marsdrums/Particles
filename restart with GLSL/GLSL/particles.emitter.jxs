@@ -6,8 +6,10 @@
 	<param name="shapeProbTex" type="int" default="3" />
 	<param name="shapePosTex" type="int" default="4" />
 	<param name="shapeNorTex" type="int" default="5" />
-	<param name="randTex" type="int" default="6" />
-	<texture file="stbn_unitvec3_2Dx1D_128x128x64_0.png" type="float16" unit="6" rectangle="1" filter="none none" wrap="repeat repeat"/>	
+	<param name="matrixEmitter" type="int" default="6" />
+	<param name="matrixEmitterSize" type="vec2" state="TEXDIM6" />
+	<param name="randTex" type="int" default="7" />
+	<texture file="stbn_unitvec3_2Dx1D_128x128x64_0.png" type="float16" unit="7" rectangle="1" filter="none none" wrap="repeat repeat"/>	
 	<param name="texDim" type="vec2" state="TEXDIM0" />
 	<param name="MVP" type="mat4" state="MODELVIEW_PROJECTION_MATRIX" />
 	<param name="pos" type="vec3" state="POSITION" />
@@ -24,6 +26,7 @@
 	<param name="emitter_vel" type="vec3" default="0. 0. 0." />
 	<param name="prev_emitter_vel" type="vec3" default="0. 0. 0. " />
 	<param name="num_faces" type="vec2" state="TEXDIM3" />
+	<param name="num_vertices" type="vec2" state="TEXDIM4" />
 	<param name="emitter_mode" type="int" default="0" />
 
 	<language name="glsl" version="1.5">
@@ -33,6 +36,8 @@
 		<bind param="shapeProbTex" program="fp" />
 		<bind param="shapePosTex" program="fp" />
 		<bind param="shapeNorTex" program="fp" />
+		<bind param="matrixEmitter" program="fp" />
+		<bind param="matrixEmitterSize" program="fp" />
 		<bind param="randTex" program="fp" />
 		<bind param="texDim" program="vp" />
 		<bind param="texDim" program="fp" />
@@ -51,6 +56,7 @@
 		<bind param="emitter_vel" program="fp" />
 		<bind param="prev_emitter_vel" program="fp" />
 		<bind param="num_faces" program="fp" />
+		<bind param="num_vertices" program="fp" />
 		<bind param="emitter_mode" program="fp" />
 
 		<program name="vp" type="vertex"  >
@@ -88,11 +94,11 @@ layout (location = 0) out vec4 outPosAge;
 layout (location = 1) out vec4 outVelMass;
 layout (location = 2) out vec4 outIdState;
 
-uniform sampler2DRect posAgeTex, velMassTex, idStateTex, randTex, shapeProbTex, shapePosTex, shapeNorTex;
+uniform sampler2DRect posAgeTex, velMassTex, idStateTex, randTex, shapeProbTex, shapePosTex, shapeNorTex, matrixEmitter;
 uniform float initial_mass, initial_speed, lifeStep;
 uniform vec3 initial_vel, initial_pos, prev_initial_pos, emitter_vel, prev_emitter_vel;
 uniform float counter, rate;
-uniform vec2 texDim, num_faces, num_vertices;
+uniform vec2 texDim, num_faces, num_vertices, matrixEmitterSize;
 uniform int emitter_mode;
 
 struct particle{
@@ -151,46 +157,81 @@ void initialize_from_point(inout particle part){
 void initialize_from_shape(inout particle part){
 
 	uint seed = getRandSeed();
-
-    float column = floor(RandomFloat01(seed) * num_faces.x);
-    vec2 lookup = texture(shapeProbTex, vec2(column + 0.5, 0.5) ).rg;
-	float rand_face = RandomFloat01(seed) < lookup.x ? column : lookup.y;
-	
-	float rand_vert = rand_face*3 + 0.5;
-	vec2 v0 = vec2(rand_vert + 0, 0.5);
-	vec2 v1 = vec2(rand_vert + 1, 0.5);
-	vec2 v2 = vec2(rand_vert + 2, 0.5);
-	
-	vec3 p0 = texture(shapePosTex, v0).xyz;
-	vec3 p1 = texture(shapePosTex, v1).xyz;
-	vec3 p2 = texture(shapePosTex, v2).xyz;
-
-	vec3 n0 = texture(shapeNorTex, v0).xyz;
-	vec3 n1 = texture(shapeNorTex, v1).xyz;
-	vec3 n2 = texture(shapeNorTex, v2).xyz;
-
-	float u = RandomFloat01(seed);
-	float v = RandomFloat01(seed);
-
-	if( u+v > 1){
-		u = 1 - u;
-		v = 1 - v;
-	}
-
-	float c = 1 - u - v;
-	part.pos = u*p1 + v*p2 + c*p0; //u*(p1 - p0) + v*(p2 - p0) + p0; 	
-	part.vel = normalize(u*n1 + v*n2 + c*n0) * initial_speed;
-	//part.vel += mix(emitter_vel, prev_emitter_vel, RandomFloat01(seed));
-	//part.pos += part.vel*RandomFloat01(seed); // randomize the start position to avoid clustering
-	part.mass = initial_mass;
+	part.mass = initial_mass * (RandomFloat01(seed)*0.5 + 0.5);
 	part.state = 0.5;
 	part.age = 0;
+
+	if(emitter_mode == 1){
+	    float column = floor(RandomFloat01(seed) * num_faces.x);
+	    vec2 lookup = texture(shapeProbTex, vec2(column + 0.5, 0.5) ).rg;
+		float rand_face = RandomFloat01(seed) < lookup.x ? column : lookup.y;
+		
+		float rand_vert = rand_face*3 + 0.5;
+		vec2 v0 = vec2(rand_vert + 0, 0.5);
+		vec2 v1 = vec2(rand_vert + 1, 0.5);
+		vec2 v2 = vec2(rand_vert + 2, 0.5);
+		
+		vec3 p0 = texture(shapePosTex, v0).xyz;
+		vec3 p1 = texture(shapePosTex, v1).xyz;
+		vec3 p2 = texture(shapePosTex, v2).xyz;
+
+		vec3 n0 = texture(shapeNorTex, v0).xyz;
+		vec3 n1 = texture(shapeNorTex, v1).xyz;
+		vec3 n2 = texture(shapeNorTex, v2).xyz;
+
+		float u = RandomFloat01(seed);
+		float v = RandomFloat01(seed);
+
+		if( u+v > 1){
+			u = 1 - u;
+			v = 1 - v;
+		}
+
+		float c = 1 - u - v;
+		part.pos = u*p1 + v*p2 + c*p0; //u*(p1 - p0) + v*(p2 - p0) + p0; 	
+		part.vel = normalize(u*n1 + v*n2 + c*n0) * initial_speed;
+		//part.vel += mix(emitter_vel, prev_emitter_vel, RandomFloat01(seed));
+		//part.pos += part.vel*RandomFloat01(seed); // randomize the start position to avoid clustering	
+		return;
+	}
+
+	if(emitter_mode == 2){
+
+		float v0 = floor(RandomFloat01(seed) * num_vertices.x);
+		float v1 = v0 != (num_vertices.x-1) ? v0+1 : v0-1;
+		vec3 p0 = texture(shapePosTex, vec2(v0, 0.5)).xyz;
+		vec3 p1 = texture(shapePosTex, vec2(v1, 0.5)).xyz;
+		vec3 n0 = texture(shapeNorTex, vec2(v0, 0.5)).xyz;
+		vec3 n1 = texture(shapeNorTex, vec2(v1, 0.5)).xyz;
+		float interp = RandomFloat01(seed);
+		part.pos = mix(p0, p1, interp);
+		part.vel = normalize( mix(n0, n1, interp)) * initial_speed;
+		return;
+	}	
+	else{
+
+		float v0 = floor(RandomFloat01(seed) * num_vertices.x);
+		part.pos = texture(shapePosTex, vec2(v0, 0.5)).xyz;
+		part.vel = texture(shapeNorTex, vec2(v0, 0.5)).xyz * initial_speed;
+		return;
+	}
+}
+
+void initialize_from_matrix(inout particle part){
+
+	uint seed = getRandSeed();
+	part.pos = texture(matrixEmitter, vec2(RandomFloat01(seed)*matrixEmitterSize.x, 0)).xyz;
+	part.vel = randomUnitVector(seed) * initial_speed * (RandomFloat01(seed)*0.5 + 0.5);// + emitter_vel;//initial_vel*initial_speed;
+	part.mass = initial_mass;// * (RandomFloat01(seed)*0.5 + 0.5);
+	part.state = 0.5;
+	part.age = 0;	
 }
 
 void initializeParticles(inout particle part){
 
 	if(emitter_mode == 0) initialize_from_point(part);  
-	if(emitter_mode == 1) initialize_from_shape(part); 
+	if(emitter_mode >= 1 && emitter_mode <= 3 ) initialize_from_shape(part); 
+	if(emitter_mode == 4) initialize_from_matrix(part);
 }
 
 void killParticle(out particle part){ part.state = 0; }

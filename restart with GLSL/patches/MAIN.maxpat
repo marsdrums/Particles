@@ -40,12 +40,164 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-73",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "jit_geometry", "" ],
+					"patching_rect" : [ 437.0, 240.0, 94.0, 22.0 ],
+					"text" : "jit.geom.remesh"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-69",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "jit_matrix", "" ],
+					"patcher" : 					{
+						"fileversion" : 1,
+						"appversion" : 						{
+							"major" : 9,
+							"minor" : 0,
+							"revision" : 0,
+							"architecture" : "x64",
+							"modernui" : 1
+						}
+,
+						"classnamespace" : "jit.gen",
+						"rect" : [ 59.0, 119.0, 600.0, 450.0 ],
+						"bglocked" : 0,
+						"openinpresentation" : 0,
+						"default_fontsize" : 12.0,
+						"default_fontface" : 0,
+						"default_fontname" : "Arial",
+						"gridonopen" : 1,
+						"gridsize" : [ 15.0, 15.0 ],
+						"gridsnaponopen" : 1,
+						"objectsnaponopen" : 1,
+						"statusbarvisible" : 2,
+						"toolbarvisible" : 1,
+						"lefttoolbarpinned" : 0,
+						"toptoolbarpinned" : 0,
+						"righttoolbarpinned" : 0,
+						"bottomtoolbarpinned" : 0,
+						"toolbars_unpinned_last_save" : 0,
+						"tallnewobj" : 0,
+						"boxanimatetime" : 200,
+						"enablehscroll" : 1,
+						"enablevscroll" : 1,
+						"devicewidth" : 0.0,
+						"description" : "",
+						"digest" : "",
+						"tags" : "",
+						"style" : "",
+						"subpatcher_template" : "",
+						"assistshowspatchername" : 0,
+						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-1",
+									"maxclass" : "newobj",
+									"numinlets" : 0,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 50.0, 14.0, 28.0, 22.0 ],
+									"text" : "in 1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-3",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 176.0, 149.0, 51.0, 22.0 ],
+									"text" : "mix -1 1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-4",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 176.0, 418.0, 35.0, 22.0 ],
+									"text" : "out 1"
+								}
+
+							}
+ ],
+						"lines" : [ 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-1", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-4", 0 ],
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+ ]
+					}
+,
+					"patching_rect" : [ 509.0, 86.0, 41.0, 22.0 ],
+					"text" : "jit.gen"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-68",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "bang" ],
+					"patching_rect" : [ 509.0, 19.0, 58.0, 22.0 ],
+					"text" : "loadbang"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-65",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "jit_matrix", "" ],
+					"patching_rect" : [ 509.0, 53.0, 132.0, 22.0 ],
+					"text" : "jit.noise 3 float32 50 20"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-64",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 919.0, 75.0, 150.0, 33.0 ],
+					"text" : "aggiungere:\nMatrix emitter"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-63",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "jit_geometry", "" ],
-					"patching_rect" : [ 489.0, 148.0, 87.0, 22.0 ],
+					"patching_rect" : [ 404.0, 166.0, 87.0, 22.0 ],
 					"text" : "jit.geom.matrix"
 				}
 
@@ -57,7 +209,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 489.0, 73.0, 58.0, 22.0 ],
+					"patching_rect" : [ 404.0, 91.0, 58.0, 22.0 ],
 					"text" : "loadbang"
 				}
 
@@ -69,7 +221,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1137.0, 248.0, 70.0, 22.0 ],
+					"patching_rect" : [ 1137.0, 216.0, 70.0, 22.0 ],
 					"text" : "loadmess 0"
 				}
 
@@ -89,7 +241,7 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-57",
-					"items" : [ "point", ",", "shape" ],
+					"items" : [ "point", ",", "shape", "surface", ",", "shape", "edges", ",", "shape", "vertices", ",", "matrix" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -370,7 +522,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "jit_matrix", "" ],
-					"patching_rect" : [ 489.0, 110.0, 318.0, 22.0 ],
+					"patching_rect" : [ 404.0, 128.0, 318.0, 22.0 ],
 					"text" : "jit.gl.model @automatic 0 @matrixoutput 1 @file duck.dae"
 				}
 
@@ -477,7 +629,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 312.0, 306.0, 93.0, 22.0 ],
+					"patching_rect" : [ 303.0, 412.0, 93.0, 22.0 ],
 					"text" : "position $1 1 $2"
 				}
 
@@ -489,7 +641,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 312.0, 272.0, 167.0, 22.0 ],
+					"patching_rect" : [ 303.0, 378.0, 167.0, 22.0 ],
 					"text" : "vexpr $f1 * 4. @scalarmode 1"
 				}
 
@@ -501,7 +653,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 312.0, 248.0, 47.0, 22.0 ],
+					"patching_rect" : [ 303.0, 354.0, 47.0, 22.0 ],
 					"text" : "pack f f"
 				}
 
@@ -513,7 +665,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "float" ],
-					"patching_rect" : [ 355.0, 201.0, 24.0, 22.0 ],
+					"patching_rect" : [ 346.0, 307.0, 24.0, 22.0 ],
 					"text" : "sin"
 				}
 
@@ -525,7 +677,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "float" ],
-					"patching_rect" : [ 312.0, 201.0, 27.0, 22.0 ],
+					"patching_rect" : [ 303.0, 307.0, 27.0, 22.0 ],
 					"text" : "cos"
 				}
 
@@ -537,7 +689,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "float" ],
-					"patching_rect" : [ 312.0, 166.0, 40.0, 22.0 ],
+					"patching_rect" : [ 303.0, 272.0, 40.0, 22.0 ],
 					"text" : "* 0.01"
 				}
 
@@ -549,7 +701,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 312.0, 77.0, 43.0, 22.0 ],
+					"patching_rect" : [ 302.0, 202.0, 43.0, 22.0 ],
 					"text" : "r bang"
 				}
 
@@ -561,7 +713,7 @@
 					"numinlets" : 5,
 					"numoutlets" : 4,
 					"outlettype" : [ "int", "", "", "int" ],
-					"patching_rect" : [ 312.0, 132.0, 61.0, 22.0 ],
+					"patching_rect" : [ 303.0, 238.0, 61.0, 22.0 ],
 					"text" : "counter"
 				}
 
@@ -2642,7 +2794,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 507.0, 322.0, 35.0, 22.0 ],
+					"patching_rect" : [ 548.0, 322.0, 35.0, 22.0 ],
 					"text" : "reset"
 				}
 
@@ -2739,8 +2891,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 3,
 					"outlettype" : [ "jit_matrix", "bang", "" ],
-					"patching_rect" : [ 38.0, 72.0, 232.0, 22.0 ],
-					"text" : "jit.world @floating 1 @erase_color 0 0 0 1"
+					"patching_rect" : [ 38.0, 72.0, 337.0, 22.0 ],
+					"text" : "jit.world @floating 1 @erase_color 0 0 0 1 @sync 0 @fps 400"
 				}
 
 			}
@@ -3034,13 +3186,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-142", 0 ],
 					"source" : [ "obj-140", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-140", 0 ],
-					"source" : [ "obj-141", 0 ]
 				}
 
 			}
@@ -3639,8 +3784,15 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-10", 0 ],
+					"destination" : [ "obj-73", 0 ],
 					"source" : [ "obj-63", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-69", 0 ],
+					"source" : [ "obj-65", 0 ]
 				}
 
 			}
@@ -3648,6 +3800,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-56", 0 ],
 					"source" : [ "obj-67", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-65", 0 ],
+					"source" : [ "obj-68", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-10", 0 ],
+					"source" : [ "obj-69", 0 ]
 				}
 
 			}
@@ -3683,6 +3849,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-32", 0 ],
 					"source" : [ "obj-71", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-10", 0 ],
+					"source" : [ "obj-73", 0 ]
 				}
 
 			}
@@ -3819,6 +3992,10 @@
 			}
 , 			{
 				"name" : "jit.geom.prop.mxo",
+				"type" : "iLaX"
+			}
+, 			{
+				"name" : "jit.geom.remesh.mxo",
 				"type" : "iLaX"
 			}
 , 			{
