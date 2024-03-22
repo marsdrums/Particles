@@ -56,7 +56,7 @@ void main() {
 
 	vec4 lookup = texture(posAgeTex, jit_in[0].uv);
 	gl_Position = MVP * vec4(lookup.xyz, 1);
-	color = vec4(1.,1.,1.,0.05);//texelFetch(colorBuff, 0);
+	color = vec4(1.,1.,1.,0.05*(1 - lookup.a));//texelFetch(colorBuff, 0);
 	EmitVertex();
 	
 	EndPrimitive();
