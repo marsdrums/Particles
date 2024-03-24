@@ -100,6 +100,7 @@ struct force{
 	vec3 pos_dir;
 	float type;
 	float amount;
+	float radius;
 };
 
 struct obstacle{
@@ -133,6 +134,7 @@ vec3 attractor(in particle p, in force f){
 
 	vec3 attraction = f.pos_dir - p.pos;
 	float dist = length(attraction);
+	if(dist > f.radius) return vec3(0);
 	dist *= dist;
 	dist += 0.01;
 	float attraction_force = f.amount / dist;
@@ -180,6 +182,7 @@ void applyForces(inout particle p){
 		f.pos_dir = lookup0.rgb;
 		f.type = lookup0.a;
 		f.amount = lookup1.a;
+		f.radius = lookup1.r;
 		p.vel += f.type == 1 ? 	gravity(p, f) : 
 								attractor(p, f);
 	}

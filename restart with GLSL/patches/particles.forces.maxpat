@@ -297,8 +297,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 837.0, 182.0, 29.5, 22.0 ],
-					"text" : "$6"
+					"patching_rect" : [ 904.75, 188.0, 39.0, 22.0 ],
+					"text" : "$6 $7"
 				}
 
 			}
@@ -391,7 +391,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 896.0, 271.0, 155.0, 22.0 ],
-					"text" : "setcell $1 1 val $2 $2 $2 $2"
+					"text" : "setcell $1 1 val $2 $3 $3 $3"
 				}
 
 			}
@@ -411,11 +411,11 @@
 				"box" : 				{
 					"id" : "obj-21",
 					"maxclass" : "newobj",
-					"numinlets" : 2,
+					"numinlets" : 3,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 896.0, 226.0, 47.0, 22.0 ],
-					"text" : "pack i f"
+					"patching_rect" : [ 896.0, 226.0, 53.0, 22.0 ],
+					"text" : "pack i f f"
 				}
 
 			}
