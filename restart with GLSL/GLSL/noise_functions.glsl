@@ -598,6 +598,27 @@ float VoronoiCrackle(vec3 pos, float multiply, float reduce, float off, float ji
 	return max(1., (w.x) * multiply) / reduce - off;
 }
 
+vec2 VoronoiCrackle2(vec3 pos, float multiply, float reduce, float off, float jitter) {
+	float a = VoronoiCrackle(pos, multiply, reduce, off, jitter);
+	float b = VoronoiCrackle(pos + vec3(43.29918, 122.4999382, 182.992811), multiply, reduce, off, jitter);
+	return vec2(a, b);
+}
+
+vec3 VoronoiCrackle3(vec3 pos, float multiply, float reduce, float off, float jitter) {
+	float a = VoronoiCrackle(pos, multiply, reduce, off, jitter);
+	float b = VoronoiCrackle(pos + vec3(43.29918, 122.4999382, 182.992811), multiply, reduce, off, jitter);
+	float c = VoronoiCrackle(pos + vec3(43.29918, 122.4999382, 182.992811), multiply, reduce, off, jitter);
+	return vec3(a, b, c);
+}
+
+vec4 VoronoiCrackle4(vec3 pos, float multiply, float reduce, float off, float jitter) {
+	float a = VoronoiCrackle(pos, multiply, reduce, off, jitter);
+	float b = VoronoiCrackle(pos + vec3(43.29918, 122.4999382, 182.992811), multiply, reduce, off, jitter);
+	float c = VoronoiCrackle(pos + vec3(12.33921, 902.4894471, 233.472881), multiply, reduce, off, jitter);
+	float d = VoronoiCrackle(pos + vec3(82.48194, 321.4812331, 113.483921), multiply, reduce, off, jitter);
+	return vec4(a, b, c, d);
+}
+
 // The MIT License
 // Copyright © 2014 Inigo Quilez
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

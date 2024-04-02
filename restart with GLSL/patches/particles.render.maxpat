@@ -84,7 +84,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "jit_gl_texture" ],
-					"patching_rect" : [ 651.0, 65.0, 30.0, 30.0 ]
+					"patching_rect" : [ 700.0, 76.0, 30.0, 30.0 ]
 				}
 
 			}

@@ -6,10 +6,7 @@
 
 	<param name="forcesTex" type="int" default="3" />
 	<param name="obstaclesTex" type="int" default="4" />
-	<param name="noiseTex" type="int" default="5" />
-	<texture file="stbn_vec3_2Dx1D_128x128x64_4.png" type="float16" unit="5" rectangle="1" filter="none none" wrap="repeat repeat"/>	
-	<param name="noiseTex2" type="int" default="6" />
-	<texture file="stbn_vec3_2Dx1D_128x128x64_4.png" type="float16" unit="6" rectangle="1" filter="none none" wrap="repeat repeat"/>
+	<param name="grid" type="int" default="5" />
 	
 	<param name="drag" type="float" default="0." />
 	<param name="field_offset" type="vec3" default="0. 0. 0." />
@@ -17,6 +14,7 @@
 	<param name="field_intensity" type="float" default="0.05" />
 	<param name="field_octaves" type="int" default="3" />
 	<param name="field_type" type="int" default="0" />
+	<param name="field_noise_type" type="int" default="0" />
 	
 	<param name="texDim" type="vec2" state="TEXDIM0" />
 	<param name="MVP" type="mat4" state="MODELVIEW_PROJECTION_MATRIX" />
@@ -30,8 +28,6 @@
 
 		<bind param="forcesTex" program="fp" />
 		<bind param="obstaclesTex" program="fp" />
-		<bind param="noiseTex" program="fp" />
-		<bind param="noiseTex2" program="fp" />
 
 		<bind param="drag" program="fp" />
 		<bind param="field_offset" program="fp" />
@@ -39,6 +35,7 @@
 		<bind param="field_intensity" program="fp" />
 		<bind param="field_octaves" program="fp" />
 		<bind param="field_type" program="fp" />
+		<bind param="field_noise_type" program="fp" />
 
 		<bind param="texDim" program="vp" />
 		<bind param="texDim" program="fp" />
@@ -81,11 +78,11 @@ layout (location = 0) out vec4 outPosAge;
 layout (location = 1) out vec4 outVelMass;
 layout (location = 2) out vec4 outIdState;
 
-uniform sampler2DRect posAgeTex, velMassTex, idStateTex, forcesTex, obstaclesTex, noiseTex, noiseTex2;
+uniform sampler2DRect posAgeTex, velMassTex, idStateTex, forcesTex, obstaclesTex, grid;
 uniform vec2 texDim;
 uniform vec3 field_offset, field_scale;
 uniform float drag, field_intensity;
-uniform int field_octaves, field_type;
+uniform int field_octaves, field_type, field_noise_type;
 
 struct particle{
 	vec3 pos;
@@ -290,24 +287,47 @@ vec3 noise(vec3 x) {
 
 vec3 fbm(vec3 p) {
 
-/*
-	vec3 f = vec3(0.0);
-	float q = 0.5;
-	float g = 2.02;
-	for(int i = 0; i < field_octaves; i++){
-		f += q * (noise(p)*2 - 1);
-		q *= 0.5;
-		p *= g;
-	}
-	return f;
-*/
 	float H = 0.6;
 	float lacunarity = 1;
 	float frequency = 3;
 	float offset = 0;
-	//return ridgedMultiFractal3(p, H, lacunarity, frequency, field_octaves, offset, 0);
-	//return pnoise3(p, vec3(0));
-	return fBmA3(p, H, lacunarity, frequency, field_octaves);
+
+	if(field_noise_type == 0){ //simplex
+		return snoise3(p);
+	}
+
+	if(field_noise_type == 1){ //perlin
+		vec3 rep = vec3(1);
+		return pnoise3(p, rep);
+	}
+
+	if(field_noise_type == 2){ //Ridged multifractal terrain
+		float gain = 1;
+		return ridgedMultiFractal3(p, H, lacunarity, frequency, field_octaves, offset, gain);
+	}
+
+	if(field_noise_type == 3){ //Hybrid additive/multiplicative multifractal
+		return hybridMultiFractal3(p, H, lacunarity, frequency, field_octaves, offset);
+	}
+
+	if(field_noise_type == 4){ // Procedural multifractal 
+		return multifractalA3(p, H, lacunarity, frequency, field_octaves, offset);
+	}
+
+	if(field_noise_type == 5){ // Heterogeneous procedural terrain
+		return heteroTerrainA3(p, H, lacunarity, frequency, field_octaves, offset);
+	}
+
+	if(field_noise_type == 6){ // Procedural fBm 
+		return fBmA3(p, H, lacunarity, frequency, field_octaves);
+	}
+
+	if(field_noise_type == 7){ //voronoi crackle
+		float multiply = 1;
+		float reduce = 1;
+		float jitter = 0;
+		return VoronoiCrackle3(p, multiply, reduce, offset, jitter);
+	}
 }
 
 vec3 force_field(in particle p){
