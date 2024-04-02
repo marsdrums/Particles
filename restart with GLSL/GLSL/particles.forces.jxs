@@ -46,6 +46,8 @@
 		<bind param="pos" program="vp" />
 		<bind param="uv" program="vp" />
 
+		<include source="noise_functions.glsl" program="fp" />
+
 <program name="vp" type="vertex"  >
 <![CDATA[
 #version 330 core
@@ -70,7 +72,6 @@ void main(void) {
 <program name="fp" type="fragment"  >
 <![CDATA[
 #version 330 core
-#define PI 3.1415926535897932
 
 in jit_PerVertex {
 	smooth vec2 uv;
@@ -101,6 +102,7 @@ struct force{
 	float type;
 	float amount;
 	float radius;
+	float radius_softness;
 };
 
 struct obstacle{
@@ -139,10 +141,11 @@ vec3 attractor(in particle p, in force f){
 	dist += 0.01;
 	float attraction_force = f.amount / dist;
 	attraction *= attraction_force;
+	attraction *= smoothstep(1 - f.radius_softness, 1, 1 - dist/f.radius);
 	return attraction / p.mass;
 }
 
-//ray-surface intersection function______________________________
+//ray-surface intersection function________________________________________________
 
 float sphere_intersect(in particle p, in obstacle o, out vec3 hit_normal){
 
@@ -183,6 +186,7 @@ void applyForces(inout particle p){
 		f.type = lookup0.a;
 		f.amount = lookup1.a;
 		f.radius = lookup1.r;
+		f.radius_softness = lookup1.g;
 		p.vel += f.type == 1 ? 	gravity(p, f) : 
 								attractor(p, f);
 	}
@@ -285,6 +289,8 @@ vec3 noise(vec3 x) {
 }
 
 vec3 fbm(vec3 p) {
+
+/*
 	vec3 f = vec3(0.0);
 	float q = 0.5;
 	float g = 2.02;
@@ -294,10 +300,20 @@ vec3 fbm(vec3 p) {
 		p *= g;
 	}
 	return f;
+*/
+	float H = 0.6;
+	float lacunarity = 1;
+	float frequency = 3;
+	float offset = 0;
+	//return ridgedMultiFractal3(p, H, lacunarity, frequency, field_octaves, offset, 0);
+	//return pnoise3(p, vec3(0));
+	return fBmA3(p, H, lacunarity, frequency, field_octaves);
 }
 
 vec3 force_field(in particle p){
+
 	return p.vel + field_intensity*fbm(p.pos * field_scale + field_offset) / p.mass;
+
 }
 
 vec3 rotateVector(vec3 v, float xRad, float yRad, float zRad) {

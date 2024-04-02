@@ -94,7 +94,8 @@ layout (location = 0) out vec4 outPosAge;
 layout (location = 1) out vec4 outVelMass;
 layout (location = 2) out vec4 outIdState;
 
-uniform sampler2DRect posAgeTex, velMassTex, idStateTex, randTex, shapeProbTex, shapePosTex, shapeNorTex, matrixEmitter;
+uniform sampler2DRect posAgeTex, velMassTex, idStateTex, randTex, shapeProbTex, shapePosTex, shapeNorTex;
+uniform sampler2D matrixEmitter;
 uniform float initial_mass, initial_speed, lifeStep;
 uniform vec3 initial_vel, initial_pos, prev_initial_pos, emitter_vel, prev_emitter_vel;
 uniform float counter, rate;
@@ -220,7 +221,7 @@ void initialize_from_shape(inout particle part){
 void initialize_from_matrix(inout particle part){
 
 	uint seed = getRandSeed();
-	part.pos = texture(matrixEmitter, vec2(RandomFloat01(seed)*matrixEmitterSize.x, 0)).xyz;
+	part.pos = texture(matrixEmitter, vec2(RandomFloat01(seed), RandomFloat01(seed))).xyz;
 	part.vel = randomUnitVector(seed) * initial_speed * (RandomFloat01(seed)*0.5 + 0.5);// + emitter_vel;//initial_vel*initial_speed;
 	part.mass = initial_mass;// * (RandomFloat01(seed)*0.5 + 0.5);
 	part.state = 0.5;
@@ -238,9 +239,9 @@ void killParticle(out particle part){ part.state = 0; }
 
 void updateParticle(inout particle part){
 
-	//if(isDead(part)) return;
-	part.pos += isStuck(part) ? vec3(0) : part.vel; 	
-	part.age += lifeStep;
+	part.pos += isStuck(part) ? vec3(0) : part.vel;
+	part.age += lifeStep >= 0 ? lifeStep : 0;
+	return;
 }
 
 void getCurrentState(out particle part){
